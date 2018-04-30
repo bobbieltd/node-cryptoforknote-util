@@ -2,7 +2,13 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+
+#if !defined(_MSC_VER)
 #include <alloca.h>
+#else
+#include <malloc.h>
+#endif
+
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -217,11 +223,11 @@ DISABLE_VS_WARNINGS(4200)
     struct {
       ec_point a, b;
     } ab[];
-  } rcs;
+  };
 POP_WARNINGS
 
   static inline size_t rs_comm_size(size_t pubs_count) {
-    return sizeof(rs_comm) + pubs_count * sizeof(rcs.ab[0]);
+    return sizeof(rs_comm) + pubs_count * sizeof(rs_comm().ab[0]);
   }
 
   void crypto_ops::generate_ring_signature(const hash &prefix_hash, const key_image &image,

@@ -1,7 +1,7 @@
 {
     "targets": [
         {
-            "target_name": "cryptoforknote",
+            "target_name": "cryptonote",
             "sources": [
                 "src/main.cc",
                 "src/cryptonote_core/cryptonote_format_utils.cpp",
@@ -11,6 +11,16 @@
                 "src/crypto/crypto-ops-data.c",
                 "src/crypto/hash.c",
                 "src/crypto/keccak.c",
+                "src/crypto/blake256.c",
+                "src/crypto/hash-extra-blake.c",
+                "src/crypto/groestl.c",
+                "src/crypto/hash-extra-groestl.c",
+                "src/crypto/jh.c",
+                "src/crypto/hash-extra-jh.c",
+                "src/crypto/skein.c",
+                "src/crypto/hash-extra-skein.c",
+                "src/crypto/slow-hash.cpp",
+                "src/crypto/oaes_lib.c",
                 "src/common/base58.cpp",
             ],
             "include_dirs": [
@@ -22,17 +32,14 @@
                 "libraries": [
                     "-lboost_system",
                     "-lboost_date_time",
-                ]
+                ],
             },
-            "cflags_c":  [
-                "-fno-exceptions -std=gnu11 -march=native -fPIC -m64 -DNDEBUG -Ofast -funroll-loops -fvariable-expansion-in-unroller -ftree-loop-if-convert-stores -fmerge-all-constants -fbranch-target-load-optimize2"
-            ],
+            "cflags_cc!": [ "-fno-exceptions", "-fno-rtti" ],
             "cflags_cc": [
-                "-fexceptions -frtti -std=gnu++11 -march=native -fPIC -m64 -DNDEBUG -Ofast -s -funroll-loops -fvariable-expansion-in-unroller -ftree-loop-if-convert-stores -fmerge-all-constants -fbranch-target-load-optimize2"
+                  "-std=c++0x",
+                  "-fexceptions",
+                  "-frtti",
             ],
-            "xcode_settings": {
-                "OTHER_CFLAGS": [ "-fexceptions -frtti" ]
-            }
         }
     ]
 }
