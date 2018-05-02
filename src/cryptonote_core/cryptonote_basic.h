@@ -166,6 +166,7 @@ namespace cryptonote
   class transaction: public transaction_prefix
   {
   public:
+    enum BLOB_TYPE blob_type;
     std::vector<std::vector<crypto::signature> > signatures; //count signatures  always the same as inputs count
     rct::rctSig rct_signatures;
 
@@ -176,7 +177,7 @@ namespace cryptonote
     BEGIN_SERIALIZE_OBJECT()
       FIELDS(*static_cast<transaction_prefix *>(this))
 
-      if (version == 1)
+      if (version == 1 && blob_type != BLOB_TYPE_CRYPTONOTE2)
       {
         ar.tag("signatures");
         ar.begin_array();
@@ -389,6 +390,8 @@ namespace cryptonote
 
     transaction miner_tx;
     std::vector<crypto::hash> tx_hashes;
+
+    void set_blob_type(enum BLOB_TYPE bt) { miner_tx.blob_type = blob_type = bt; }
 
     BEGIN_SERIALIZE_OBJECT()
       FIELDS(*static_cast<block_header *>(this))
