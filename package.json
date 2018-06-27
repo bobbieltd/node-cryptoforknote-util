@@ -1,5 +1,5 @@
 {
-    "name": "semipool-trtl-util",
+    "name": "cryptonote-util",
     "version": "0.0.1",
     "main": "cryptonote",
     "gypfile": true,
