@@ -1,4 +1,4 @@
-Node-Cryptonote-Util
+Node-CryptoForkNote-Util
 ====================
 
 Dependencies

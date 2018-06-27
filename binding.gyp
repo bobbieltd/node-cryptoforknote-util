@@ -1,7 +1,7 @@
 {
     "targets": [
         {
-            "target_name": "cryptonote",
+            "target_name": "cryptoforknote",
             "sources": [
                 "src/main.cc",
                 "src/cryptonote_core/cryptonote_format_utils.cpp",
@@ -16,7 +16,7 @@
             "include_dirs": [
                 "src",
                 "src/contrib/epee/include",
-                "<!(node -e \"require('nan')\")"
+                "<!(node -e \"require('nan')\")",
             ],
             "link_settings": {
                 "libraries": [
@@ -24,12 +24,15 @@
                     "-lboost_date_time",
                 ]
             },
-            "cflags_cc!": [ "-fno-exceptions", "-fno-rtti" ],
-            "cflags_cc": [
-                  "-std=c++0x",
-                  "-fexceptions",
-                  "-frtti",
+            "cflags_c":  [
+                "-fno-exceptions -std=gnu11 -march=native -fPIC -DNDEBUG -Ofast -funroll-loops -fvariable-expansion-in-unroller -ftree-loop-if-convert-stores -fmerge-all-constants -fbranch-target-load-optimize2"
             ],
+            "cflags_cc": [
+                "-fexceptions -frtti -std=gnu++11 -march=native -fPIC -DNDEBUG -Ofast -s -funroll-loops -fvariable-expansion-in-unroller -ftree-loop-if-convert-stores -fmerge-all-constants -fbranch-target-load-optimize2"
+            ],
+            "xcode_settings": {
+                "OTHER_CFLAGS": [ "-fexceptions -frtti" ]
+            }
         }
     ]
 }
