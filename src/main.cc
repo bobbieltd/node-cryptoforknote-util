@@ -147,7 +147,7 @@ NAN_METHOD(construct_block_blob) {
         if (!info[2]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 3 should be a number");
         blob_type = static_cast<enum BLOB_TYPE>(Nan::To<int>(info[2]).FromMaybe(0));
     }
-
+	
     block b = AUTO_VAL_INIT(b);
     b.set_blob_type(blob_type);
     if (!parse_and_validate_block_from_blob(block_template_blob, b)) return THROW_ERROR_EXCEPTION("Failed to parse block");
@@ -226,6 +226,44 @@ NAN_METHOD(address_decode_integrated) {
         info.GetReturnValue().Set(Nan::New(static_cast<uint32_t>(prefix)));
     }
 }
+NAN_METHOD(update_block_ts) {
+    if (info.Length() < 3) return THROW_ERROR_EXCEPTION("You must provide three arguments.");
+
+    Local<Object> block_template_buf = info[0]->ToObject();
+
+    if (!Buffer::HasInstance(block_template_buf)) return THROW_ERROR_EXCEPTION("1st argument should be buffer objects.");
+
+    blobdata block_template_blob = std::string(Buffer::Data(block_template_buf), Buffer::Length(block_template_buf));
+    blobdata output = "";
+
+    enum BLOB_TYPE blob_type = BLOB_TYPE_CRYPTONOTE;
+    if (info.Length() >= 2) {
+        if (!info[1]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 2 should be a number");
+        blob_type = static_cast<enum BLOB_TYPE>(Nan::To<int>(info[1]).FromMaybe(0));
+    }
+
+    block b = AUTO_VAL_INIT(b);
+    b.set_blob_type(blob_type);
+    if (!parse_and_validate_block_from_blob(block_template_blob, b)) return THROW_ERROR_EXCEPTION("Failed to parse block");
+	
+	uint64_t ts = 0;
+    if (info.Length() >= 3) {
+        if (!info[2]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 3 should be a number");
+        ts = Nan::To<int>(info[2]).FromMaybe(0);
+		b.timestamp = ts;
+    }
+
+    if (blob_type == BLOB_TYPE_FORKNOTE2) {
+        block parent_block;
+        if (!construct_parent_block(b, parent_block)) return THROW_ERROR_EXCEPTION("Failed to construct parent block");
+        if (!mergeBlocks(parent_block, b, std::vector<crypto::hash>())) return THROW_ERROR_EXCEPTION("Failed to postprocess mining block");
+    }
+
+    if (!block_to_blob(b, output)) return THROW_ERROR_EXCEPTION("Failed to convert block to blob");
+
+    v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)output.data(), output.size()).ToLocalChecked();
+    info.GetReturnValue().Set(returnValue);
+}
 
 NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("construct_block_blob").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(construct_block_blob)).ToLocalChecked());
@@ -233,6 +271,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("convert_blob").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(convert_blob)).ToLocalChecked());
     Nan::Set(target, Nan::New("address_decode").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(address_decode)).ToLocalChecked());
     Nan::Set(target, Nan::New("address_decode_integrated").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(address_decode_integrated)).ToLocalChecked());
+	Nan::Set(target, Nan::New("update_block_ts").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(update_block_ts)).ToLocalChecked());
 }
 
 NODE_MODULE(cryptoforknote, init)
