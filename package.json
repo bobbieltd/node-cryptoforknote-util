@@ -1,14 +1,14 @@
 {
-  "name": "cryptoforknote-util",
-  "version": "5.0.0",
-  "main": "cryptoforknote-util",
+  "name": "cryptonote-aeon-util",
+  "version": "0.0.3",
+  "main": "cryptonote",
   "author": {
     "name": "LucasJones",
     "email": "lucasjonesdev@hotmail.co.uk"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/MoneroOcean/node-cryptoforknote-util.git"
+    "url": "https://github.com/clintar/node-cryptonote-util.git"
   },
   "dependencies": {
     "bindings": "*",
@@ -16,9 +16,6 @@
   },
   "keywords": [
     "cryptonight",
-    "cryptonote",
-    "forknote",
-    "bytecoin",
-    "monero"
+    "cryptonote"
   ]
 }
